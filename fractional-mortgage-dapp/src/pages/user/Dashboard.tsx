@@ -152,7 +152,7 @@ const Dashboard = () => {
               </div>
             ))}
           </div>
-          <button className="w-full p-3 text-center text-purple-600 font-medium">
+          <button className="w-full p-3 text-center text-[#e6d2b5] font-medium">
             Show all transactions
           </button>
         </div>
