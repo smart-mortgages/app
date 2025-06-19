@@ -56,7 +56,7 @@ export const mockCampaigns: Campaign[] = [
     ],
     targetClients: 15,
     status: 'pending',
-    mortgageType: 'Variable Rate',
+    mortgageType: 'Fixed Rate',
     conditions: ['cond-016', 'cond-004', 'cond-014'],
     conditionsWithProperties: [
       createConditionWithProperties('cond-016', {

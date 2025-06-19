@@ -40,27 +40,37 @@ const AdminDashboard = () => {
     setCampaignConditions([...campaign.conditions]);
   };
 
-  // Save campaign conditions
-  const handleSaveCampaignConditions = (conditionsWithProperties?: ConditionWithProperties[]) => {
+  // Save campaign conditions and metadata
+  const handleSaveCampaignConditions = (
+    conditionsWithProperties?: ConditionWithProperties[],
+    updatedCampaign?: Campaign
+  ) => {
     if (!editingCampaign) return;
     
     const updatedCampaigns = campaigns.map(camp => {
       if (camp.id === editingCampaign.id) {
+        // If we have an updated campaign with metadata changes, use that as the base
+        const baseUpdate = updatedCampaign || camp;
+        
         return {
-          ...camp,
+          ...baseUpdate,
           conditions: campaignConditions,
-          conditionsWithProperties: conditionsWithProperties || camp.conditionsWithProperties
+          conditionsWithProperties: conditionsWithProperties || baseUpdate.conditionsWithProperties
         };
       }
       return camp;
     });
     
     setCampaigns(updatedCampaigns);
+    
+    // Use the updated campaign as the base for the selected campaign
+    const baseForSelected = updatedCampaign || editingCampaign;
     setSelectedCampaign({
-      ...editingCampaign,
+      ...baseForSelected,
       conditions: campaignConditions,
-      conditionsWithProperties: conditionsWithProperties || editingCampaign.conditionsWithProperties
+      conditionsWithProperties: conditionsWithProperties || baseForSelected.conditionsWithProperties
     });
+    
     setEditingCampaign(null);
   };
 

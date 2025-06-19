@@ -9,7 +9,7 @@ interface CampaignEditViewProps {
   campaignConditions: string[];
   mockConditions: { [category: string]: Condition[] };
   handleCancelEdit: () => void;
-  handleSaveCampaignConditions: (conditionsWithProperties?: ConditionWithProperties[]) => void;
+  handleSaveCampaignConditions: (conditionsWithProperties?: ConditionWithProperties[], updatedCampaign?: Campaign) => void;
   handleDragStart: (condition: Condition) => void;
   handleDragOver: (e: React.DragEvent<HTMLDivElement>) => void;
   handleDrop: (e: React.DragEvent<HTMLDivElement>) => void;
@@ -35,6 +35,11 @@ const CampaignEditView: React.FC<CampaignEditViewProps> = ({
   const [conditionsWithProperties, setConditionsWithProperties] = useState<ConditionWithProperties[]>(
     editingCampaign.conditionsWithProperties || []
   );
+  
+  // State for campaign metadata
+  const [campaignName, setCampaignName] = useState<string>(editingCampaign.name);
+  const [startDate, setStartDate] = useState<string>(editingCampaign.startDate);
+  const [endDate, setEndDate] = useState<string>(editingCampaign.endDate);
   
   // State for tracking validation errors
   const [validationErrors, setValidationErrors] = useState<Record<string, string[]>>({});
@@ -143,13 +148,22 @@ const CampaignEditView: React.FC<CampaignEditViewProps> = ({
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Handle save with properties
+  // Handle save with properties and campaign metadata
   const handleSave = () => {
     // Validate all properties before saving
     const isValid = validateAllProperties();
     
     if (isValid) {
-      handleSaveCampaignConditions(conditionsWithProperties);
+      // Create updated campaign object with new metadata
+      const updatedCampaign = {
+        ...editingCampaign,
+        name: campaignName,
+        startDate,
+        endDate
+      };
+      
+      // Pass updated campaign and conditions with properties to save handler
+      handleSaveCampaignConditions(conditionsWithProperties, updatedCampaign);
     } else {
       // Show a message or scroll to the validation errors
       const errorSummary = document.querySelector('.validation-summary');
@@ -189,6 +203,43 @@ const CampaignEditView: React.FC<CampaignEditViewProps> = ({
           >
             {isValidating ? 'Validating...' : 'Save Changes'}
           </button>
+        </div>
+      </div>
+
+      {/* Campaign Metadata */}
+      <div className="bg-[#333333] p-4 border-b border-[#404040]">
+        <h3 className="text-md font-medium text-[#e6d2b5] mb-4">Campaign Details</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label htmlFor="campaignName" className="block text-sm font-medium text-[#a0a0a0] mb-1">Campaign Name</label>
+            <input
+              id="campaignName"
+              type="text"
+              value={campaignName}
+              onChange={(e) => setCampaignName(e.target.value)}
+              className="w-full p-2 bg-[#262626] border border-[#404040] rounded-md text-[#f5f5f5] focus:border-[#d2b48c] focus:outline-none"
+            />
+          </div>
+          <div>
+            <label htmlFor="startDate" className="block text-sm font-medium text-[#a0a0a0] mb-1">Start Date</label>
+            <input
+              id="startDate"
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="w-full p-2 bg-[#262626] border border-[#404040] rounded-md text-[#f5f5f5] focus:border-[#d2b48c] focus:outline-none"
+            />
+          </div>
+          <div>
+            <label htmlFor="endDate" className="block text-sm font-medium text-[#a0a0a0] mb-1">End Date</label>
+            <input
+              id="endDate"
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="w-full p-2 bg-[#262626] border border-[#404040] rounded-md text-[#f5f5f5] focus:border-[#d2b48c] focus:outline-none"
+            />
+          </div>
         </div>
       </div>
 
