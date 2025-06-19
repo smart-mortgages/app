@@ -1,22 +1,23 @@
 import {createPublicClient, http, defineChain} from "viem";
+import {foundry} from "viem/chains";
 
-const customChain = /*#__PURE__*/ defineChain({
-    id: 72,
-    name: 'Foundry',
-    nativeCurrency: {
-        decimals: 18,
-        name: 'Ether',
-        symbol: 'ETH',
-    },
-    rpcUrls: {
-        default: {
-            http: ['http://127.0.0.1:8545'],
-            webSocket: ['ws://127.0.0.1:8545'],
-        },
-    },
-})
+// const customChain = /*#__PURE__*/ defineChain({
+//     id: 1337,
+//     name: 'Foundry',
+//     nativeCurrency: {
+//         decimals: 18,
+//         name: 'Ether',
+//         symbol: 'ETH',
+//     },
+//     rpcUrls: {
+//         default: {
+//             http: ['http://anvil-node-innovation-machine.treasuryai.cloud'],
+//             webSocket: ['ws://anvil-node-innovation-machine.treasuryai.cloud'],
+//         },
+//     },
+// })
 
 export const client = createPublicClient({
-    chain: customChain,
-    transport: http('http://127.0.0.1:8545')
+    chain: foundry,
+    transport: http('http://anvil-node-innovation-machine.treasuryai.cloud')
 });

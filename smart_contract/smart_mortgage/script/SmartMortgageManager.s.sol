@@ -92,7 +92,7 @@ contract SmartMortgageManagerScript is Script {
         manager.saveCustomer(customerData);
         manager.saveSmartMortgage(customerData.personalIdNumber, mortgageData, mortgageRules);
 
-        // Customer 3: Tomas Dvorak  
+        // Customer 3: Tomas Dvorak
         customerData = CustomerData({
             firstName: "Tomas",
             lastName: "Dvorak",
@@ -272,7 +272,7 @@ contract SmartMortgageManagerScript is Script {
         manager.saveCustomer(customerData);
         manager.saveSmartMortgage(customerData.personalIdNumber, mortgageData, mortgageRules);
 
-        // Customer 8: Veronika Horakova  
+        // Customer 8: Veronika Horakova
         customerData = CustomerData({
             firstName: "Veronika",
             lastName: "Horakova",

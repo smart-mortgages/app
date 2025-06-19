@@ -7,4 +7,4 @@ if [ -z "$PRIVATE_KEY" ]; then
     exit 1
 fi
 
-forge script ../script/SmartMortgageManager.s.sol:SmartMortgageManagerScript --slow --multi --broadcast --private-key "$PRIVATE_KEY" --rpc-url "$RPC" --chain-id 72
+forge script ../script/SmartMortgageManager.s.sol:SmartMortgageManagerScript --slow --multi --broadcast --private-key "$PRIVATE_KEY" --rpc-url "$RPC" --sender $ACCOUNT
