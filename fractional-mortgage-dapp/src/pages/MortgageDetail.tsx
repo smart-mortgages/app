@@ -27,8 +27,8 @@ const MortgageDetail = ({ mortgageData }: MortgageDetailProps) => {
   const data = mortgageData || defaultMortgageData;
   
   return (
-    <div className="min-h-screen bg-[#1a1a1a] p-6">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-[#1a1a1a] pb-20">
+      <div className="px-4 max-w-lg mx-auto">
         <button 
           onClick={() => navigate('/dashboard')}
           className="flex items-center space-x-2 text-[#d2b48c] mb-6 hover:text-[#e6d2b5] transition-colors"
