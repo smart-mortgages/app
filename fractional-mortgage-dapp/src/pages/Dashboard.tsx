@@ -11,7 +11,7 @@ const Dashboard = () => {
   
   const financialData = {
     accounts: {
-      balance: 86.07,
+      balance: 3245.67,
       currency: '€',
       transactions: [
         { id: 1, name: 'FlexiFondy', amount: -0.16, time: 'Yesterday, 11:50', icon: '🇪🇺' },
@@ -55,11 +55,11 @@ const Dashboard = () => {
       <div className="bg-gradient-to-r from-[#262626] to-[#333333] p-6 rounded-b-3xl shadow-lg border-b border-[#d2b48c]">
         <div className="flex justify-end mb-6">
           <div className="flex space-x-3">
-            <button className="flex items-center space-x-2 bg-[#d2b48c] text-[#262626] px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#c19a6b] transition-colors shadow-md">
+            <button className="flex items-center space-x-2 bg-[#d2b48c] text-[#f5f5f5] px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#c19a6b] transition-colors shadow-md">
               <BarChart3 className="w-5 h-5" />
               <span>Stats</span>
             </button>
-            <button className="flex items-center space-x-2 bg-[#d2b48c] text-[#262626] px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#c19a6b] transition-colors shadow-md">
+            <button className="flex items-center space-x-2 bg-[#d2b48c] text-[#f5f5f5] px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#c19a6b] transition-colors shadow-md">
               <Wallet className="w-5 h-5" />
               <span>Settings</span>
             </button>

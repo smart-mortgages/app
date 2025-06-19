@@ -1,84 +1,114 @@
 import React from 'react';
 
-interface MortgagePayment {
+interface MortgageData {
   month: string;
-  principal: number;
-  interest: number;
-  total: number;
+  mortgageBalance: number;
+  housePrice: number;
 }
 
 const SimpleMortgageChart: React.FC = () => {
-  // Mock mortgage payment data for the last 6 months
-  const mortgagePayments: MortgagePayment[] = [
-    { month: '01/25', principal: 420.76, interest: 226.56, total: 647.32 },
-    { month: '02/25', principal: 422.65, interest: 224.67, total: 647.32 },
-    { month: '03/25', principal: 424.55, interest: 222.77, total: 647.32 },
-    { month: '04/25', principal: 426.46, interest: 220.86, total: 647.32 },
-    { month: '05/25', principal: 428.38, interest: 218.94, total: 647.32 },
-    { month: '06/25', principal: 430.31, interest: 217.01, total: 647.32 },
+  // Initial mortgage amount
+  const initialMortgage = 250000;
+  
+  // Mock mortgage data for the last 6 months
+  // Showing decreasing mortgage balance and fluctuating house prices
+  const mortgageData: MortgageData[] = [
+    { month: '01/25', mortgageBalance: 230000, housePrice: 275000 },
+    { month: '02/25', mortgageBalance: 229500, housePrice: 276200 },
+    { month: '03/25', mortgageBalance: 229000, housePrice: 278500 },
+    { month: '04/25', mortgageBalance: 228500, housePrice: 279800 },
+    { month: '05/25', mortgageBalance: 228000, housePrice: 285500 },
+    { month: '06/25', mortgageBalance: 227500, housePrice: 289000 },
   ];
   
-  // Use the total payment amount for scaling the chart
-  const maxValue = 647.32; // Total payment amount
+  // Calculate the equity difference (house price - mortgage balance)
+  const equityDifferences = mortgageData.map(data => ({
+    month: data.month,
+    difference: data.housePrice - data.mortgageBalance
+  }));
+  
+  // Find the maximum values for scaling
+  const maxMortgage = Math.max(...mortgageData.map(d => d.mortgageBalance));
+  const maxHousePrice = Math.max(...mortgageData.map(d => d.housePrice));
+  const maxValue = Math.max(maxMortgage, maxHousePrice);
+  
+  // Calculate the current equity difference (latest data point)
+  const currentEquity = equityDifferences[equityDifferences.length - 1].difference;
+  const currentEquityPercentage = (currentEquity / mortgageData[mortgageData.length - 1].housePrice) * 100;
   
   return (
     <div className="w-full h-24 relative">
-      {/* Current payment indicator */}
+      {/* Current equity indicator */}
       <div className="absolute top-0 right-0 text-xs text-[#e6d2b5] font-medium">
-        €{maxValue.toFixed(2)}/mo
+        Equity: €{currentEquity.toLocaleString()} ({currentEquityPercentage.toFixed(1)}%)
       </div>
       
       <svg width="100%" height="100%" viewBox="0 0 100 40" preserveAspectRatio="none">
-        {/* Stacked bar chart */}
-        {mortgagePayments.map((payment, index) => {
-          const x = (index / (mortgagePayments.length - 1)) * 100;
-          const barWidth = 10;
-          const xPos = x - barWidth/2;
-          
-          // Calculate heights based on the viewBox
-          const principalHeight = (payment.principal / maxValue) * 35;
-          const interestHeight = (payment.interest / maxValue) * 35;
-          const interestY = 40 - interestHeight;
-          const principalY = interestY - principalHeight;
-          
-          return (
-            <g key={index}>
-              {/* Interest portion (top) */}
-              <rect 
-                x={xPos}
-                y={interestY}
-                width={barWidth}
-                height={interestHeight}
-                fill="#a58a68"
-                opacity="0.7"
-              />
-              
-              {/* Principal portion (bottom) */}
-              <rect 
-                x={xPos}
-                y={principalY}
-                width={barWidth}
-                height={principalHeight}
-                fill="#d2b48c"
-                opacity="0.9"
-              />
-            </g>
-          );
-        })}
+        {/* Area chart showing the difference */}
+        <polygon
+          points={`
+            ${mortgageData.map((data, index) => {
+              const x = (index / (mortgageData.length - 1)) * 100;
+              // Scale mortgage balance to viewBox - moved lower by adjusting the multiplier from 35 to 30
+              const y = 40 - ((data.mortgageBalance / maxValue) * 30);
+              return `${x},${y}`;
+            }).join(' ')}
+            ${mortgageData.slice().reverse().map((data, index) => {
+              const reverseIndex = mortgageData.length - 1 - index;
+              const x = (reverseIndex / (mortgageData.length - 1)) * 100;
+              // Scale house price to viewBox - moved lower by adjusting the multiplier from 35 to 30
+              const y = 40 - ((data.housePrice / maxValue) * 30);
+              return `${x},${y}`;
+            }).join(' ')}
+          `}
+          fill="url(#equityGradient)"
+          opacity="0.7"
+        />
         
-        {/* Trend line showing principal growth */}
+        {/* House price trend line - more distinct color */}
         <polyline
-          points={mortgagePayments.map((payment, index) => {
-            const x = (index / (mortgagePayments.length - 1)) * 100;
-            const y = 40 - ((payment.principal / maxValue) * 35);
+          points={mortgageData.map((data, index) => {
+            const x = (index / (mortgageData.length - 1)) * 100;
+            const y = 40 - ((data.housePrice / maxValue) * 30);
             return `${x},${y}`;
           }).join(' ')}
           fill="none"
-          stroke="#e6d2b5"
-          strokeWidth="1"
-          strokeDasharray="2,2"
+          stroke="#bf8c4c"
+          strokeWidth="1.5"
         />
+        
+        {/* Mortgage balance trend line - more distinct color */}
+        <polyline
+          points={mortgageData.map((data, index) => {
+            const x = (index / (mortgageData.length - 1)) * 100;
+            const y = 40 - ((data.mortgageBalance / maxValue) * 30);
+            return `${x},${y}`;
+          }).join(' ')}
+          fill="none"
+          stroke="#2e7d32"
+          strokeWidth="1.5"
+        />
+        
+        {/* Gradient definition */}
+        <defs>
+          <linearGradient id="equityGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#4caf50" stopOpacity="0.5" />
+            <stop offset="100%" stopColor="#4caf50" stopOpacity="0.2" />
+          </linearGradient>
+        </defs>
       </svg>
+      
+      {/* Legend - positioned at the bottom with increased padding */}
+      <div className="flex justify-between text-xs">
+        <div className="flex items-center">
+          <div className="w-3 h-1 bg-[#2e7d32] mr-1"></div>
+          <span className="text-[#a0a0a0]">Mortgage</span>
+        </div>
+        <div className="flex items-center">
+          <div className="w-3 h-1 bg-[#bf8c4c] mr-1"></div>
+          <span className="text-[#a0a0a0]">House Price</span>
+        </div>
+      </div>
     </div>
   );
 };
