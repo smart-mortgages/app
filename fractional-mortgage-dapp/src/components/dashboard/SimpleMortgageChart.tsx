@@ -1,31 +1,78 @@
 import React from 'react';
 
+interface MortgagePayment {
+  month: string;
+  principal: number;
+  interest: number;
+  total: number;
+}
+
 const SimpleMortgageChart: React.FC = () => {
-  // Sample data points for a simple mortgage chart (decreasing over time)
-  const dataPoints = [30, 29, 28, 27, 26, 25, 24, 23, 22, 21];
-  const maxValue = 30; // Fixed max for better visualization
+  // Mock mortgage payment data for the last 6 months
+  const mortgagePayments: MortgagePayment[] = [
+    { month: '01/25', principal: 420.76, interest: 226.56, total: 647.32 },
+    { month: '02/25', principal: 422.65, interest: 224.67, total: 647.32 },
+    { month: '03/25', principal: 424.55, interest: 222.77, total: 647.32 },
+    { month: '04/25', principal: 426.46, interest: 220.86, total: 647.32 },
+    { month: '05/25', principal: 428.38, interest: 218.94, total: 647.32 },
+    { month: '06/25', principal: 430.31, interest: 217.01, total: 647.32 },
+  ];
+  
+  // Use the total payment amount for scaling the chart
+  const maxValue = 647.32; // Total payment amount
   
   return (
-    <div className="w-full h-24">
+    <div className="w-full h-24 relative">
+      {/* Current payment indicator */}
+      <div className="absolute top-0 right-0 text-xs text-[#e6d2b5] font-medium">
+        €{maxValue.toFixed(2)}/mo
+      </div>
+      
       <svg width="100%" height="100%" viewBox="0 0 100 40" preserveAspectRatio="none">
-        {/* Bar chart for mortgage */}
-        {dataPoints.map((point, index) => (
-          <rect
-            key={index}
-            x={index * 10}
-            y={40 - (point / maxValue) * 35}
-            width="6"
-            height={(point / maxValue) * 35}
-            fill="#d2b48c"
-            opacity="0.8"
-          />
-        ))}
+        {/* Stacked bar chart */}
+        {mortgagePayments.map((payment, index) => {
+          const x = (index / (mortgagePayments.length - 1)) * 100;
+          const barWidth = 10;
+          const xPos = x - barWidth/2;
+          
+          // Calculate heights based on the viewBox
+          const principalHeight = (payment.principal / maxValue) * 35;
+          const interestHeight = (payment.interest / maxValue) * 35;
+          const interestY = 40 - interestHeight;
+          const principalY = interestY - principalHeight;
+          
+          return (
+            <g key={index}>
+              {/* Interest portion (top) */}
+              <rect 
+                x={xPos}
+                y={interestY}
+                width={barWidth}
+                height={interestHeight}
+                fill="#a58a68"
+                opacity="0.7"
+              />
+              
+              {/* Principal portion (bottom) */}
+              <rect 
+                x={xPos}
+                y={principalY}
+                width={barWidth}
+                height={principalHeight}
+                fill="#d2b48c"
+                opacity="0.9"
+              />
+            </g>
+          );
+        })}
         
-        {/* Dotted line showing trend */}
+        {/* Trend line showing principal growth */}
         <polyline
-          points={dataPoints.map((point, index) => 
-            `${index * 10 + 3},${40 - (point / maxValue) * 35}`
-          ).join(' ')}
+          points={mortgagePayments.map((payment, index) => {
+            const x = (index / (mortgagePayments.length - 1)) * 100;
+            const y = 40 - ((payment.principal / maxValue) * 35);
+            return `${x},${y}`;
+          }).join(' ')}
           fill="none"
           stroke="#e6d2b5"
           strokeWidth="1"
