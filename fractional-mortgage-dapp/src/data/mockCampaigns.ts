@@ -1,4 +1,10 @@
-import type { Campaign } from '../types/admin';
+import type { Campaign, ConditionWithProperties } from '../types/admin';
+
+// Helper function to create typed condition properties (helps TypeScript recognize the type usage)
+const createConditionWithProperties = (conditionId: string, properties: Record<string, any>): ConditionWithProperties => ({
+  conditionId,
+  properties
+});
 
 // Mock campaign data
 export const mockCampaigns: Campaign[] = [
@@ -18,7 +24,24 @@ export const mockCampaigns: Campaign[] = [
     targetClients: 10,
     status: 'active',
     mortgageType: 'Fixed Rate',
-    conditions: ['cond-001', 'cond-007', 'cond-012']
+    conditions: ['cond-001', 'cond-007', 'cond-012'],
+    conditionsWithProperties: [
+      createConditionWithProperties('cond-001', {
+        minAmount: 3000,
+        frequency: 'monthly',
+        consecutiveMonths: 6
+      }),
+      createConditionWithProperties('cond-007', {
+        maxLtvRatio: 75,
+        applyToFirstTimeBuyers: true,
+        applyToRefinance: false
+      }),
+      createConditionWithProperties('cond-012', {
+        minEnergyClass: 'B',
+        requiresCertificate: true,
+        bonusDiscountPercentage: 2
+      })
+    ]
   },
   {
     id: 'camp-002',
@@ -34,7 +57,24 @@ export const mockCampaigns: Campaign[] = [
     targetClients: 15,
     status: 'pending',
     mortgageType: 'Variable Rate',
-    conditions: ['cond-016', 'cond-004', 'cond-014']
+    conditions: ['cond-016', 'cond-004', 'cond-014'],
+    conditionsWithProperties: [
+      createConditionWithProperties('cond-016', {
+        previousLoanAge: 24,
+        minRefinanceAmount: 100000,
+        requiresDocumentation: true
+      }),
+      createConditionWithProperties('cond-004', {
+        minLoyaltyMonths: 12,
+        primaryAccount: true,
+        minimumBalance: 5000
+      }),
+      createConditionWithProperties('cond-014', {
+        minMonthsWithoutDelinquency: 24,
+        allowedLatePayments: 0,
+        checkCreditHistory: true
+      })
+    ]
   },
   {
     id: 'camp-003',
@@ -54,6 +94,23 @@ export const mockCampaigns: Campaign[] = [
     targetClients: 12,
     status: 'active',
     mortgageType: 'Fixed Rate',
-    conditions: ['cond-005', 'cond-008', 'cond-015']
+    conditions: ['cond-005', 'cond-008', 'cond-015'],
+    conditionsWithProperties: [
+      createConditionWithProperties('cond-005', {
+        hasInsurance: true,
+        coveragePercentage: 80,
+        minCoveragePeriod: 5
+      }),
+      createConditionWithProperties('cond-008', {
+        maxDstiRatio: 40,
+        includeOtherDebts: true,
+        stressTestPercentage: 2
+      }),
+      createConditionWithProperties('cond-015', {
+        repaymentHistoryMonths: 24,
+        allowedLatePayments: 1,
+        requiresProof: true
+      })
+    ]
   }
 ];

@@ -1,10 +1,10 @@
 // src/pages/admin/Dashboard.tsx
 import { Home, Users, Settings, Tag } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 // Import types
-import type { Campaign, Condition, NavItem } from '../../types/admin';
+import type { Campaign, Condition, NavItem, ConditionWithProperties } from '../../types/admin';
 
 // Import components
 import SidebarNavigation from '../../components/admin/SidebarNavigation';
@@ -18,8 +18,6 @@ import { mockConditions } from '../../data/mockConditions';
 import { mockCampaigns } from '../../data/mockCampaigns';
 
 const AdminDashboard = () => {
-  const navigate = useNavigate();
-  
   // State management
   const [activeSection, setActiveSection] = useState('campaigns');
   const [campaigns, setCampaigns] = useState(mockCampaigns);
@@ -43,14 +41,15 @@ const AdminDashboard = () => {
   };
 
   // Save campaign conditions
-  const handleSaveCampaignConditions = () => {
+  const handleSaveCampaignConditions = (conditionsWithProperties?: ConditionWithProperties[]) => {
     if (!editingCampaign) return;
     
     const updatedCampaigns = campaigns.map(camp => {
       if (camp.id === editingCampaign.id) {
         return {
           ...camp,
-          conditions: campaignConditions
+          conditions: campaignConditions,
+          conditionsWithProperties: conditionsWithProperties || camp.conditionsWithProperties
         };
       }
       return camp;
@@ -59,7 +58,8 @@ const AdminDashboard = () => {
     setCampaigns(updatedCampaigns);
     setSelectedCampaign({
       ...editingCampaign,
-      conditions: campaignConditions
+      conditions: campaignConditions,
+      conditionsWithProperties: conditionsWithProperties || editingCampaign.conditionsWithProperties
     });
     setEditingCampaign(null);
   };
