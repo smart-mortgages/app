@@ -47,36 +47,81 @@ const AdminDashboard = () => {
   ) => {
     if (!editingCampaign) return;
     
-    const updatedCampaigns = campaigns.map(camp => {
-      if (camp.id === editingCampaign.id) {
-        // If we have an updated campaign with metadata changes, use that as the base
-        const baseUpdate = updatedCampaign || camp;
-        
-        return {
-          ...baseUpdate,
-          conditions: campaignConditions,
-          conditionsWithProperties: conditionsWithProperties || baseUpdate.conditionsWithProperties
-        };
-      }
-      return camp;
-    });
+    // Check if this is a new campaign (not in the current campaigns array)
+    const isNewCampaign = !campaigns.some(camp => camp.id === editingCampaign.id);
+    
+    let updatedCampaigns;
+    
+    if (isNewCampaign) {
+      // This is a new campaign, add it to the campaigns array
+      const newCampaign = {
+        ...(updatedCampaign || editingCampaign),
+        conditions: campaignConditions,
+        conditionsWithProperties: conditionsWithProperties || []
+      };
+      
+      updatedCampaigns = [...campaigns, newCampaign];
+    } else {
+      // This is an existing campaign, update it
+      updatedCampaigns = campaigns.map(camp => {
+        if (camp.id === editingCampaign.id) {
+          // If we have an updated campaign with metadata changes, use that as the base
+          const baseUpdate = updatedCampaign || camp;
+          
+          return {
+            ...baseUpdate,
+            conditions: campaignConditions,
+            conditionsWithProperties: conditionsWithProperties || baseUpdate.conditionsWithProperties
+          };
+        }
+        return camp;
+      });
+    }
     
     setCampaigns(updatedCampaigns);
     
     // Use the updated campaign as the base for the selected campaign
     const baseForSelected = updatedCampaign || editingCampaign;
-    setSelectedCampaign({
+    const savedCampaign = {
       ...baseForSelected,
       conditions: campaignConditions,
       conditionsWithProperties: conditionsWithProperties || baseForSelected.conditionsWithProperties
-    });
+    };
     
+    setSelectedCampaign(savedCampaign);
     setEditingCampaign(null);
   };
 
   // Cancel editing
   const handleCancelEdit = () => {
     setEditingCampaign(null);
+    setCampaignConditions([]);
+  };
+  
+  // Create new campaign
+  const handleCreateNewCampaign = () => {
+    // Generate a unique ID for the new campaign
+    const newId = `camp-${String(campaigns.length + 1).padStart(3, '0')}`;
+    
+    // Create a blank campaign template
+    const newCampaign: Campaign = {
+      id: newId,
+      name: 'New Campaign',
+      description: 'Campaign description',
+      discountPercentage: 10,
+      startDate: new Date().toISOString().split('T')[0], // Today's date
+      endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 30 days from now
+      clients: [],
+      targetClients: 10,
+      status: 'pending',
+      mortgageType: 'Fixed Rate',
+      conditions: [],
+      conditionsWithProperties: []
+    };
+    
+    // Set as editing campaign
+    setEditingCampaign(newCampaign);
+    setCampaignConditions([]);
   };
 
   // Handle drag start
@@ -131,40 +176,42 @@ const AdminDashboard = () => {
   const renderContent = () => {
     switch (activeSection) {
       case 'campaigns':
-        if (editingCampaign) {
-          return (
-            <CampaignEditView
-              editingCampaign={editingCampaign}
-              campaignConditions={campaignConditions}
-              mockConditions={mockConditions}
-              handleCancelEdit={handleCancelEdit}
-              handleSaveCampaignConditions={handleSaveCampaignConditions}
-              handleDragStart={handleDragStart}
-              handleDragOver={handleDragOver}
-              handleDrop={handleDrop}
-              handleRemoveCondition={handleRemoveCondition}
-              getConditionById={getConditionById}
-            />
-          );
-        }
-        
         return (
           <div className="flex h-full">
+            {/* Campaign Sidebar - Always visible */}
             <CampaignSidebar
               campaigns={campaigns}
               selectedCampaign={selectedCampaign}
               setSelectedCampaign={setSelectedCampaign}
               getCampaignStatusColor={getCampaignStatusColor}
               getCampaignProgress={getCampaignProgress}
+              handleCreateNewCampaign={handleCreateNewCampaign}
             />
+            
+            {/* Main Content Area */}
             <div className="flex-1">
-              <CampaignDetails
-                selectedCampaign={selectedCampaign}
-                getCampaignStatusColor={getCampaignStatusColor}
-                getCampaignProgress={getCampaignProgress}
-                handleEditCampaign={handleEditCampaign}
-                getConditionById={getConditionById}
-              />
+              {editingCampaign ? (
+                <CampaignEditView
+                  editingCampaign={editingCampaign}
+                  campaignConditions={campaignConditions}
+                  mockConditions={mockConditions}
+                  handleCancelEdit={handleCancelEdit}
+                  handleSaveCampaignConditions={handleSaveCampaignConditions}
+                  handleDragStart={handleDragStart}
+                  handleDragOver={handleDragOver}
+                  handleDrop={handleDrop}
+                  handleRemoveCondition={handleRemoveCondition}
+                  getConditionById={getConditionById}
+                />
+              ) : (
+                <CampaignDetails
+                  selectedCampaign={selectedCampaign}
+                  getCampaignStatusColor={getCampaignStatusColor}
+                  getCampaignProgress={getCampaignProgress}
+                  handleEditCampaign={handleEditCampaign}
+                  getConditionById={getConditionById}
+                />
+              )}
             </div>
           </div>
         );
