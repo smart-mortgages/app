@@ -1,5 +1,5 @@
 // No React import needed
-import { BarChart3, Wallet, ArrowRight, Plus, Bitcoin } from 'lucide-react';
+import { BarChart3, Wallet } from 'lucide-react';
 import AccountBalanceChart from '../components/dashboard/AccountBalanceChart';
 import MortgageInfo from '../components/dashboard/MortgageInfo.tsx';
 
@@ -94,33 +94,7 @@ const Dashboard = () => {
         </div>
       </div>
       
-      {/* Common action buttons */}
-      <div className="p-4 flex justify-around mb-4">
-        <button className="flex flex-col items-center">
-          <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-1">
-            <Plus className="w-6 h-6 text-gray-700" />
-          </div>
-          <span className="text-xs">Add money</span>
-        </button>
-        <button className="flex flex-col items-center">
-          <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-1">
-            <ArrowRight className="w-6 h-6 text-gray-700" />
-          </div>
-          <span className="text-xs">Transfer</span>
-        </button>
-        <button className="flex flex-col items-center">
-          <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-1">
-            <Bitcoin className="w-6 h-6 text-gray-700" />
-          </div>
-          <span className="text-xs">Crypto</span>
-        </button>
-        <button className="flex flex-col items-center">
-          <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-1">
-            <Wallet className="w-6 h-6 text-gray-700" />
-          </div>
-          <span className="text-xs">Mortgages</span>
-        </button>
-      </div>
+      {/* Action buttons removed as requested */}
       
       <div className="px-4 mb-6">
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
@@ -171,7 +145,7 @@ const Dashboard = () => {
   // Crypto view removed as requested
 
   return (
-    <div className="min-h-screen bg-gray-100 pb-20">
+    <div className="min-h-screen bg-gray-200 pb-20">
       {renderMainView()}
     </div>
   );

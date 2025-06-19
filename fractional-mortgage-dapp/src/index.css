@@ -65,6 +65,7 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background-color: #1f2937; /* dark gray-800 */
 }
 
 h1 {
