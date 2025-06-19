@@ -47,9 +47,17 @@ contract SmartMortgageManagerTest is Test {
             note: "VIP klient"
         });
 
-        SmartMortgageRules memory mortgageRules = SmartMortgageRules({checkAge: true});
+        SmartMortgageRules memory mortgageRules = SmartMortgageRules({
+            checkAccount: true,
+            checkBalance: true,
+            checkTxCount: true
+        });
 
         manager.saveCustomer(customerData);
-        manager.saveSmartMortgage(customerData.documentNumber, mortgageData, mortgageRules);
+        manager.saveSmartMortgage(customerData.personalIdNumber, mortgageData, mortgageRules);
+        assertEq(manager.getAllSmartMortgages().length, 1);
+
+        SmartMortgage mortgage = SmartMortgage(manager.getAllSmartMortgages()[0]);
+        assertEq(mortgage.getInterestRate(), 380);
     }
 }

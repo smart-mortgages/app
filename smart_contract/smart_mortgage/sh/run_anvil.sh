@@ -1,1 +1,1 @@
-anvil
+anvil --chain-id 72

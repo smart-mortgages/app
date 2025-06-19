@@ -6,7 +6,7 @@ struct SmartMortgageData {
     string loanAgreementNumber;
     string mortgageIssueDate;
     string mortgageMaturityDate;
-    uint256 mortgageBalanceEUR;
+    int256 mortgageBalanceEUR;
     uint256 monthlyMortgagePaymentEUR;
     string paymentDiscipline;
     string guarantor;
@@ -15,15 +15,17 @@ struct SmartMortgageData {
 }
 
 struct SmartMortgageRules {
-    bool checkAge;
+    bool checkAccount;
+    bool checkBalance;
+    bool checkTxCount;
 }
 
 contract SmartMortgage {
-    Customer public immutable customer;
+    address public customer;
     SmartMortgageData private data;
     SmartMortgageRules private rules;
 
-    constructor(Customer _customer) {
+    constructor(address _customer) {
         customer = _customer;
     }
 
@@ -41,5 +43,32 @@ contract SmartMortgage {
 
     function setRules(SmartMortgageRules memory _rules) public {
         rules = _rules;
+    }
+
+    function getCustomerPersonalIdNumber() public view returns (string memory) {
+        Customer c = Customer(customer);
+        return c.getData().personalIdNumber;
+    }
+
+    function getInterestRate() public view returns (uint256) {
+        Customer c = Customer(customer);
+        uint256 interestRate = 440;
+
+        if (rules.checkAccount) {
+            if (keccak256(bytes(c.getData().accountCurrency)) == keccak256(bytes("EUR"))) {
+                interestRate -= 20;
+            }
+        }
+        if (rules.checkBalance) {
+            if (c.getData().accountBalanceEUR >= 600) {
+                interestRate -= 20;
+            }
+        }
+        if (rules.checkTxCount) {
+            if (c.getData().transactionCount >= 5) {
+                interestRate -= 20;
+            }
+        }
+        return interestRate;
     }
 }

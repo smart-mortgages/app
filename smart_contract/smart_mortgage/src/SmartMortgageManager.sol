@@ -10,27 +10,27 @@ contract SmartMortgageManager {
     string[] private mortgageKeys;
 
     function saveCustomer(CustomerData memory customerData) public {
-        if (address(customers[customerData.documentNumber]) == address(0)) {
-            customerKeys.push(customerData.documentNumber);
+        if (address(customers[customerData.personalIdNumber]) == address(0)) {
+            customerKeys.push(customerData.personalIdNumber);
             Customer customer = new Customer();
             customer.setData(customerData);
-            customers[customerData.documentNumber] = customer;
+            customers[customerData.personalIdNumber] = customer;
         } else {
-            customers[customerData.documentNumber].setData(customerData);
+            customers[customerData.personalIdNumber].setData(customerData);
         }
     }
 
     function saveSmartMortgage(
-        string memory customerDocumentNumber,
+        string memory customerPersonalIdNumber,
         SmartMortgageData memory mortgageData,
         SmartMortgageRules memory mortgageRules
     ) public {
-        Customer customer = customers[customerDocumentNumber];
+        Customer customer = customers[customerPersonalIdNumber];
         require(address(customer) != address(0), "Customer does not exist");
 
         if (address(mortgages[mortgageData.loanAgreementNumber]) == address(0)) {
             mortgageKeys.push(mortgageData.loanAgreementNumber);
-            SmartMortgage mortgage = new SmartMortgage(customer);
+            SmartMortgage mortgage = new SmartMortgage(address(customer));
             mortgage.setData(mortgageData);
             mortgage.setRules(mortgageRules);
             mortgages[mortgageData.loanAgreementNumber] = mortgage;
@@ -40,18 +40,18 @@ contract SmartMortgageManager {
         }
     }
 
-    function getAllCustomers() public view returns (Customer[] memory) {
-        Customer[] memory result = new Customer[](customerKeys.length);
+    function getAllCustomers() public view returns (address[] memory) {
+        address[] memory result = new address[](customerKeys.length);
         for (uint i = 0; i < customerKeys.length; i++) {
-            result[i] = customers[customerKeys[i]];
+            result[i] = address(customers[customerKeys[i]]);
         }
         return result;
     }
 
-    function getAllSmartMortgages() public view returns (SmartMortgage[] memory) {
-        SmartMortgage[] memory result = new SmartMortgage[](mortgageKeys.length);
+    function getAllSmartMortgages() public view returns (address[] memory) {
+        address[] memory result = new address[](mortgageKeys.length);
         for (uint i = 0; i < mortgageKeys.length; i++) {
-            result[i] = mortgages[mortgageKeys[i]];
+            result[i] = address(mortgages[mortgageKeys[i]]);
         }
         return result;
     }

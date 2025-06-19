@@ -1,0 +1,222 @@
+[
+  {
+    "type": "function",
+    "name": "getData",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct CustomerData",
+        "components": [
+          {
+            "name": "firstName",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "lastName",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "personalIdNumber",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "dateOfBirth",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "_address",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "phoneNumber",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "email",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "documentType",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "documentNumber",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "accountNumber",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "accountCurrency",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "transactionCount",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "iban",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "accountOpeningDate",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "accountStatus",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "accountBalanceEUR",
+            "type": "int256",
+            "internalType": "int256"
+          },
+          {
+            "name": "monthlyIncomeEUR",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "standingOrdersCount",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "lastDataUpdateDate",
+            "type": "string",
+            "internalType": "string"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "setData",
+    "inputs": [
+      {
+        "name": "_data",
+        "type": "tuple",
+        "internalType": "struct CustomerData",
+        "components": [
+          {
+            "name": "firstName",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "lastName",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "personalIdNumber",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "dateOfBirth",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "_address",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "phoneNumber",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "email",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "documentType",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "documentNumber",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "accountNumber",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "accountCurrency",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "transactionCount",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "iban",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "accountOpeningDate",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "accountStatus",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "accountBalanceEUR",
+            "type": "int256",
+            "internalType": "int256"
+          },
+          {
+            "name": "monthlyIncomeEUR",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "standingOrdersCount",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "lastDataUpdateDate",
+            "type": "string",
+            "internalType": "string"
+          }
+        ]
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  }
+]

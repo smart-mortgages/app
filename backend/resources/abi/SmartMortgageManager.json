@@ -1,0 +1,225 @@
+[
+  {
+    "type": "function",
+    "name": "getAllCustomers",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address[]",
+        "internalType": "address[]"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getAllSmartMortgages",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address[]",
+        "internalType": "address[]"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "saveCustomer",
+    "inputs": [
+      {
+        "name": "customerData",
+        "type": "tuple",
+        "internalType": "struct CustomerData",
+        "components": [
+          {
+            "name": "firstName",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "lastName",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "personalIdNumber",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "dateOfBirth",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "_address",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "phoneNumber",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "email",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "documentType",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "documentNumber",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "accountNumber",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "accountCurrency",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "transactionCount",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "iban",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "accountOpeningDate",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "accountStatus",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "accountBalanceEUR",
+            "type": "int256",
+            "internalType": "int256"
+          },
+          {
+            "name": "monthlyIncomeEUR",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "standingOrdersCount",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "lastDataUpdateDate",
+            "type": "string",
+            "internalType": "string"
+          }
+        ]
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "saveSmartMortgage",
+    "inputs": [
+      {
+        "name": "customerPersonalIdNumber",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "mortgageData",
+        "type": "tuple",
+        "internalType": "struct SmartMortgageData",
+        "components": [
+          {
+            "name": "loanAgreementNumber",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "mortgageIssueDate",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "mortgageMaturityDate",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "mortgageBalanceEUR",
+            "type": "int256",
+            "internalType": "int256"
+          },
+          {
+            "name": "monthlyMortgagePaymentEUR",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "paymentDiscipline",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "guarantor",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "lastDataUpdateDate",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "note",
+            "type": "string",
+            "internalType": "string"
+          }
+        ]
+      },
+      {
+        "name": "mortgageRules",
+        "type": "tuple",
+        "internalType": "struct SmartMortgageRules",
+        "components": [
+          {
+            "name": "checkAccount",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "checkBalance",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "checkTxCount",
+            "type": "bool",
+            "internalType": "bool"
+          }
+        ]
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  }
+]

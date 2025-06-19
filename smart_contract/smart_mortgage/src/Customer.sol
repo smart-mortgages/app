@@ -16,7 +16,7 @@ struct CustomerData {
     string iban;
     string accountOpeningDate;
     string accountStatus;
-    uint256 accountBalanceEUR;
+    int256 accountBalanceEUR;
     uint256 monthlyIncomeEUR;
     uint256 standingOrdersCount;
     string lastDataUpdateDate;
