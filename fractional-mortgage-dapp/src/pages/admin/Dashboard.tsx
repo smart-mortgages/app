@@ -1,6 +1,15 @@
-import { ArrowRight, Home, Users, FileText, Settings, ChevronRight, Tag, Percent, Target, CheckCircle, AlertCircle } from 'lucide-react';
+import { ArrowRight, Home, Users, FileText, Settings, ChevronRight, Tag, Percent, Target, CheckCircle, AlertCircle, X, ArrowLeft, Plus, GripVertical, CreditCard, Clock, Shield, Home as HomeIcon, Building, AlertTriangle, Repeat, Leaf } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+
+// Condition interface definition
+interface Condition {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  icon: React.ReactNode;
+}
 
 // Campaign interface definition
 interface Client {
@@ -21,7 +30,143 @@ interface Campaign {
   targetClients: number;
   status: 'active' | 'pending' | 'completed';
   mortgageType: string;
+  conditions: string[]; // Array of condition IDs
 }
+
+// Mock condition data organized by categories
+const mockConditions: { [category: string]: Condition[] } = {
+  "Account Activity": [
+    {
+      id: "cond-001",
+      name: "Regular Income",
+      description: "Regular income deposits to the account (minimum amount and frequency)",
+      category: "Account Activity",
+      icon: <CreditCard className="w-4 h-4" />
+    },
+    {
+      id: "cond-002",
+      name: "Transaction Volume",
+      description: "Minimum number of transactions per month (card payments, transfers)",
+      category: "Account Activity",
+      icon: <CreditCard className="w-4 h-4" />
+    },
+    {
+      id: "cond-003",
+      name: "Account Loyalty",
+      description: "Length of account holding at the bank (minimum years)",
+      category: "Account Activity",
+      icon: <Clock className="w-4 h-4" />
+    },
+  ],
+  "Insurance": [
+    {
+      id: "cond-004",
+      name: "Loan Repayment Insurance",
+      description: "Client has active loan repayment insurance",
+      category: "Insurance",
+      icon: <Shield className="w-4 h-4" />
+    },
+    {
+      id: "cond-005",
+      name: "Life Insurance",
+      description: "Client has active life insurance policy",
+      category: "Insurance",
+      icon: <Shield className="w-4 h-4" />
+    },
+    {
+      id: "cond-006",
+      name: "Household Insurance",
+      description: "Client has active household insurance policy",
+      category: "Insurance",
+      icon: <Shield className="w-4 h-4" />
+    },
+  ],
+  "Mortgage Parameters": [
+    {
+      id: "cond-007",
+      name: "LTV Ratio",
+      description: "Loan-to-Value ratio below specified threshold",
+      category: "Mortgage Parameters",
+      icon: <HomeIcon className="w-4 h-4" />
+    },
+    {
+      id: "cond-008",
+      name: "DSTI Ratio",
+      description: "Debt Service-to-Income ratio below specified threshold",
+      category: "Mortgage Parameters",
+      icon: <HomeIcon className="w-4 h-4" />
+    },
+    {
+      id: "cond-009",
+      name: "Purpose-Specific Loan",
+      description: "Mortgage is purpose-specific rather than non-purpose-specific",
+      category: "Mortgage Parameters",
+      icon: <HomeIcon className="w-4 h-4" />
+    },
+    {
+      id: "cond-010",
+      name: "Multiple Applicants",
+      description: "Mortgage has multiple applicants (e.g., married couple)",
+      category: "Mortgage Parameters",
+      icon: <Users className="w-4 h-4" />
+    },
+  ],
+  "Property & Collateral": [
+    {
+      id: "cond-011",
+      name: "Property Type",
+      description: "Specific property type (apartment, house, land)",
+      category: "Property & Collateral",
+      icon: <Building className="w-4 h-4" />
+    },
+    {
+      id: "cond-012",
+      name: "Energy Performance",
+      description: "Property has high energy performance rating (class A/B)",
+      category: "Property & Collateral",
+      icon: <Leaf className="w-4 h-4" />
+    },
+    {
+      id: "cond-013",
+      name: "Collateral Value",
+      description: "Property has sufficient collateral value",
+      category: "Property & Collateral",
+      icon: <Building className="w-4 h-4" />
+    },
+  ],
+  "Payment History": [
+    {
+      id: "cond-014",
+      name: "Clean Repayment History",
+      description: "Client has no issues with past repayments",
+      category: "Payment History",
+      icon: <CheckCircle className="w-4 h-4" />
+    },
+    {
+      id: "cond-015",
+      name: "No Delinquencies",
+      description: "Client has no payment delinquencies in the past",
+      category: "Payment History",
+      icon: <AlertTriangle className="w-4 h-4" />
+    },
+  ],
+  "Special Conditions": [
+    {
+      id: "cond-016",
+      name: "Refinancing",
+      description: "Mortgage refinancing from another bank",
+      category: "Special Conditions",
+      icon: <Repeat className="w-4 h-4" />
+    },
+    {
+      id: "cond-017",
+      name: "Green Mortgage",
+      description: "Mortgage for eco-friendly housing",
+      category: "Special Conditions",
+      icon: <Leaf className="w-4 h-4" />
+    },
+  ],
+};
 
 // Mock campaign data
 const mockCampaigns: Campaign[] = [
@@ -40,7 +185,8 @@ const mockCampaigns: Campaign[] = [
     ],
     targetClients: 10,
     status: 'active',
-    mortgageType: 'Fixed Rate'
+    mortgageType: 'Fixed Rate',
+    conditions: ['cond-007', 'cond-014', 'cond-003']
   },
   {
     id: 'camp-002',
@@ -55,7 +201,8 @@ const mockCampaigns: Campaign[] = [
     ],
     targetClients: 15,
     status: 'pending',
-    mortgageType: 'Variable Rate'
+    mortgageType: 'Variable Rate',
+    conditions: ['cond-016', 'cond-004', 'cond-014']
   },
   {
     id: 'camp-003',
@@ -74,14 +221,20 @@ const mockCampaigns: Campaign[] = [
     ],
     targetClients: 12,
     status: 'active',
-    mortgageType: 'Fixed Rate'
+    mortgageType: 'Fixed Rate',
+    conditions: ['cond-005', 'cond-008', 'cond-015']
   }
 ];
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('campaigns');
-  const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(mockCampaigns[0]);
+  // Use state for campaigns to allow updates to persist
+  const [campaigns, setCampaigns] = useState<Campaign[]>(mockCampaigns);
+  const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(campaigns[0]);
+  const [editingCampaign, setEditingCampaign] = useState<Campaign | null>(null);
+  const [draggedCondition, setDraggedCondition] = useState<Condition | null>(null);
+  const [campaignConditions, setCampaignConditions] = useState<string[]>([]);
 
   // Navigation items for the sidebar
   const navItems = [
@@ -91,6 +244,78 @@ const AdminDashboard = () => {
     { id: 'mortgages', label: 'Mortgages', icon: <FileText className="w-5 h-5" /> },
     { id: 'settings', label: 'Settings', icon: <Settings className="w-5 h-5" /> },
   ];
+
+  // Start editing campaign
+  const handleEditCampaign = (campaign: Campaign) => {
+    setEditingCampaign(campaign);
+    setCampaignConditions([...campaign.conditions]);
+  };
+
+  // Save campaign conditions
+  const handleSaveCampaignConditions = () => {
+    if (!editingCampaign) return;
+    
+    // Update the campaign with new conditions
+    const updatedCampaigns = campaigns.map(camp => {
+      if (camp.id === editingCampaign.id) {
+        return { ...camp, conditions: campaignConditions };
+      }
+      return camp;
+    });
+    
+    // Update campaigns state to persist changes
+    setCampaigns(updatedCampaigns);
+    
+    // Find the updated campaign
+    const updatedCampaign = updatedCampaigns.find(c => c.id === editingCampaign.id);
+    
+    // Update selected campaign if it was the one being edited
+    if (updatedCampaign) {
+      setSelectedCampaign(updatedCampaign);
+    }
+    
+    // Exit edit mode
+    setEditingCampaign(null);
+  };
+
+  // Cancel editing
+  const handleCancelEdit = () => {
+    setEditingCampaign(null);
+    setCampaignConditions([]);
+  };
+
+  // Handle drag start
+  const handleDragStart = (condition: Condition) => {
+    setDraggedCondition(condition);
+  };
+
+  // Handle drag over
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+  };
+
+  // Handle drop
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    if (draggedCondition && !campaignConditions.includes(draggedCondition.id)) {
+      setCampaignConditions([...campaignConditions, draggedCondition.id]);
+    }
+    setDraggedCondition(null);
+  };
+
+  // Remove condition from campaign
+  const handleRemoveCondition = (conditionId: string) => {
+    setCampaignConditions(campaignConditions.filter(id => id !== conditionId));
+  };
+
+  // Get condition by ID
+  const getConditionById = (conditionId: string): Condition | undefined => {
+    for (const category in mockConditions) {
+      const condition = mockConditions[category].find(c => c.id === conditionId);
+      if (condition) return condition;
+    }
+    return undefined;
+  };
 
   // Get campaign status color
   const getCampaignStatusColor = (status: string) => {
@@ -117,7 +342,7 @@ const AdminDashboard = () => {
           <p className="text-xs text-[#a0a0a0] mt-1">Manage discount campaigns</p>
         </div>
         <div className="py-2">
-          {mockCampaigns.map(campaign => (
+          {campaigns.map(campaign => (
             <button
               key={campaign.id}
               onClick={() => setSelectedCampaign(campaign)}
@@ -157,6 +382,118 @@ const AdminDashboard = () => {
     );
   };
 
+  // Render campaign edit view
+  const renderCampaignEditView = () => {
+    if (!editingCampaign) return null;
+
+    return (
+      <div className="flex flex-col h-full overflow-hidden">
+        {/* Header */}
+        <div className="bg-[#262626] p-4 border-b border-[#404040] flex justify-between items-center">
+          <div className="flex items-center">
+            <button 
+              onClick={handleCancelEdit}
+              className="mr-3 p-2 rounded-full hover:bg-[#333333]"
+            >
+              <ArrowLeft className="w-5 h-5 text-[#f5f5f5]" />
+            </button>
+            <div>
+              <h2 className="text-lg font-medium text-[#e6d2b5]">Edit Campaign Conditions</h2>
+              <p className="text-sm text-[#a0a0a0]">{editingCampaign.name}</p>
+            </div>
+          </div>
+          <button 
+            onClick={handleSaveCampaignConditions}
+            className="px-4 py-2 bg-[#d2b48c] text-[#f5f5f5] rounded-lg hover:bg-[#c19a6b] transition-colors text-sm font-medium"
+          >
+            Save Changes
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="flex flex-1 overflow-hidden">
+          {/* Available conditions */}
+          <div className="w-1/2 border-r border-[#404040] overflow-y-auto p-4">
+            <h3 className="text-md font-medium text-[#e6d2b5] mb-4">Available Conditions</h3>
+            <p className="text-sm text-[#a0a0a0] mb-4">Drag conditions to apply them to this campaign</p>
+            
+            {Object.keys(mockConditions).map(category => (
+              <div key={category} className="mb-6">
+                <h4 className="text-sm font-medium text-[#f5f5f5] mb-2">{category}</h4>
+                <div className="space-y-2">
+                  {mockConditions[category].map(condition => (
+                    <div 
+                      key={condition.id}
+                      draggable
+                      onDragStart={() => handleDragStart(condition)}
+                      className={`flex items-center p-3 bg-[#333333] rounded-lg border border-[#404040] cursor-grab hover:border-[#d2b48c] transition-colors ${
+                        campaignConditions.includes(condition.id) ? 'opacity-50' : ''
+                      }`}
+                    >
+                      <div className="p-1.5 rounded-full bg-[#404040] mr-3">
+                        {condition.icon}
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-[#f5f5f5]">{condition.name}</p>
+                        <p className="text-xs text-[#a0a0a0]">{condition.description}</p>
+                      </div>
+                      <GripVertical className="w-4 h-4 text-[#a0a0a0]" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Selected conditions */}
+          <div 
+            className="w-1/2 p-4 overflow-y-auto"
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+          >
+            <h3 className="text-md font-medium text-[#e6d2b5] mb-4">Campaign Conditions</h3>
+            <p className="text-sm text-[#a0a0a0] mb-4">Drop conditions here to apply them to this campaign</p>
+            
+            {campaignConditions.length === 0 ? (
+              <div className="border-2 border-dashed border-[#404040] rounded-lg p-8 text-center">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#333333] mb-3">
+                  <Plus className="w-6 h-6 text-[#a0a0a0]" />
+                </div>
+                <p className="text-[#a0a0a0]">Drag conditions here to apply them to this campaign</p>
+              </div>
+            ) : (
+              <div className="space-y-2 min-h-[200px]">
+                {campaignConditions.map(conditionId => {
+                  const condition = getConditionById(conditionId);
+                  if (!condition) return null;
+                  
+                  return (
+                    <div 
+                      key={condition.id}
+                      className="flex items-center p-3 bg-[#333333] rounded-lg border border-[#d2b48c]">
+                      <div className="p-1.5 rounded-full bg-[#404040] mr-3">
+                        {condition.icon}
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-[#f5f5f5]">{condition.name}</p>
+                        <p className="text-xs text-[#a0a0a0]">{condition.description}</p>
+                      </div>
+                      <button 
+                        onClick={() => handleRemoveCondition(condition.id)}
+                        className="p-1 rounded-full hover:bg-[#404040]">
+                        <X className="w-4 h-4 text-[#f5f5f5]" />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   // Render campaign details
   const renderCampaignDetails = () => {
     if (!selectedCampaign) {
@@ -188,10 +525,12 @@ const AdminDashboard = () => {
             </div>
           </div>
           <div className="flex space-x-2">
-            <button className="px-4 py-2 bg-[#333333] text-[#f5f5f5] rounded-lg hover:bg-[#404040] transition-colors text-sm">
+            <button 
+              onClick={() => handleEditCampaign(selectedCampaign)}
+              className="px-4 py-2 bg-[#333333] text-[#f5f5f5] rounded-lg hover:bg-[#404040] transition-colors text-sm">
               Edit Campaign
             </button>
-            <button className="px-4 py-2 bg-[#d2b48c] text-[#1a1a1a] rounded-lg hover:bg-[#c19a6b] transition-colors text-sm font-medium">
+            <button className="px-4 py-2 bg-[#d2b48c] text-[#f5f5f5] rounded-lg hover:bg-[#c19a6b] transition-colors text-sm font-medium">
               Add Clients
             </button>
           </div>
@@ -229,6 +568,37 @@ const AdminDashboard = () => {
           <p className="text-[#f5f5f5] bg-[#262626] p-4 rounded-lg border border-[#404040]">
             {selectedCampaign.description}
           </p>
+        </div>
+
+        <div className="mb-6">
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="text-lg font-medium text-[#e6d2b5]">Conditions</h3>
+            <span className="text-sm text-[#a0a0a0]">{selectedCampaign.conditions.length} applied</span>
+          </div>
+          <div className="bg-[#262626] p-4 rounded-lg border border-[#404040]">
+            {selectedCampaign.conditions.length === 0 ? (
+              <p className="text-[#a0a0a0] text-center py-2">No conditions applied to this campaign</p>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {selectedCampaign.conditions.map(conditionId => {
+                  const condition = getConditionById(conditionId);
+                  if (!condition) return null;
+                  
+                  return (
+                    <div key={condition.id} className="flex items-center p-2 bg-[#333333] rounded-lg">
+                      <div className="p-1 rounded-full bg-[#404040] mr-2">
+                        {condition.icon}
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-[#f5f5f5]">{condition.name}</p>
+                        <p className="text-xs text-[#a0a0a0]">{condition.category}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
 
         <div>
@@ -273,6 +643,11 @@ const AdminDashboard = () => {
 
   // Render content based on active section
   const renderContent = () => {
+    // If editing a campaign, show the edit view
+    if (editingCampaign) {
+      return renderCampaignEditView();
+    }
+    
     switch (activeSection) {
       case 'campaigns':
         return (
