@@ -34,7 +34,7 @@ const CampaignDetails: React.FC<CampaignDetailsProps> = ({
         <div>
           <h2 className="text-2xl font-bold text-[#e6d2b5]">{selectedCampaign.name}</h2>
           <div className="flex items-center mt-1">
-            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getCampaignStatusColor(selectedCampaign.status)} bg-opacity-10 bg-current`}>
+            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getCampaignStatusColor(selectedCampaign.status).replace('text-', 'bg-')}/10 ${getCampaignStatusColor(selectedCampaign.status)}`}>
               {selectedCampaign.status === 'active' ? <CheckCircle className="w-3 h-3 mr-1" /> : 
                selectedCampaign.status === 'pending' ? <AlertCircle className="w-3 h-3 mr-1" /> : 
                <CheckCircle className="w-3 h-3 mr-1" />}
@@ -134,7 +134,10 @@ const CampaignDetails: React.FC<CampaignDetailsProps> = ({
               <tr className="bg-[#333333]">
                 <th className="text-left text-[#a0a0a0] p-3">Name</th>
                 <th className="text-left text-[#a0a0a0] p-3">Email</th>
+                <th className="text-left text-[#a0a0a0] p-3">Application Date</th>
+                <th className="text-left text-[#a0a0a0] p-3">Eligibility</th>
                 <th className="text-left text-[#a0a0a0] p-3">Status</th>
+                <th className="text-left text-[#a0a0a0] p-3">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -142,10 +145,21 @@ const CampaignDetails: React.FC<CampaignDetailsProps> = ({
                 <tr key={client.id} className="border-t border-[#404040]">
                   <td className="p-3 text-[#f5f5f5]">{client.name}</td>
                   <td className="p-3 text-[#f5f5f5]">{client.email}</td>
+                  <td className="p-3 text-[#f5f5f5]">{client.applied ? new Date().toLocaleDateString() : '-'}</td>
+                  <td className="p-3 text-[#f5f5f5]">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400">
+                      {client.applied ? 'Eligible' : 'Pending Check'}
+                    </span>
+                  </td>
                   <td className="p-3">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${client.applied ? 'text-green-500 bg-green-500' : 'text-yellow-500 bg-yellow-500'} bg-opacity-10`}>
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${client.applied ? 'bg-green-500/10 text-green-500' : 'bg-yellow-500/10 text-yellow-500'}`}>
                       {client.applied ? 'Applied' : 'Not Applied'}
                     </span>
+                  </td>
+                  <td className="p-3">
+                    <button className="px-2 py-1 bg-[#333333] text-[#f5f5f5] rounded hover:bg-[#404040] transition-colors text-xs">
+                      {client.applied ? 'View Details' : 'Send Invitation'}
+                    </button>
                   </td>
                 </tr>
               ))}
