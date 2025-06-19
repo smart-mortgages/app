@@ -1,9 +1,11 @@
 // No React import needed
-import { BarChart3, Wallet } from 'lucide-react';
-import AccountBalanceChart from '../components/dashboard/AccountBalanceChart';
-import MortgageInfo from '../components/dashboard/MortgageInfo.tsx';
+import { BarChart3, Wallet, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import SimpleAccountChart from '../components/dashboard/SimpleAccountChart';
+import SimpleMortgageChart from '../components/dashboard/SimpleMortgageChart';
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   // Mock data for the dashboard
   // No longer using tabs or crypto view
   
@@ -93,23 +95,36 @@ const Dashboard = () => {
       
       {/* Action buttons removed as requested */}
       
+      {/* Two tiles per row layout */}
       <div className="px-4 mb-6">
-        <div className="bg-[#262626] rounded-xl shadow-md overflow-hidden border border-[#404040]">
-          <div className="p-4 border-b border-[#404040]">
-            <h3 className="font-medium text-[#e6d2b5] text-center">Account Balance Chart</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Account Balance Chart Tile - Clickable */}
+          <div 
+            className="bg-[#262626] rounded-xl shadow-md overflow-hidden border border-[#404040] cursor-pointer hover:border-[#d2b48c] transition-colors group"
+            onClick={() => navigate('/account-balance')}
+          >
+            <div className="p-4 border-b border-[#404040] flex justify-between items-center">
+              <h3 className="font-medium text-[#e6d2b5]">Account Balance</h3>
+              <ArrowRight className="w-5 h-5 text-[#d2b48c] opacity-0 group-hover:opacity-100 transition-opacity" />
+            </div>
+            <div className="p-4">
+              <SimpleAccountChart />
+            </div>
           </div>
-          <div className="p-4">
-            <AccountBalanceChart />
+          
+          {/* Mortgage Information Tile - Clickable */}
+          <div 
+            className="bg-[#262626] rounded-xl shadow-md overflow-hidden border border-[#404040] cursor-pointer hover:border-[#d2b48c] transition-colors group"
+            onClick={() => navigate('/mortgage')}
+          >
+            <div className="p-4 border-b border-[#404040] flex justify-between items-center">
+              <h3 className="font-medium text-[#e6d2b5]">Mortgage</h3>
+              <ArrowRight className="w-5 h-5 text-[#d2b48c] opacity-0 group-hover:opacity-100 transition-opacity" />
+            </div>
+            <div className="p-4">
+              <SimpleMortgageChart />
+            </div>
           </div>
-        </div>
-      </div>
-      
-      <div className="px-4 mb-6">
-        <div className="bg-[#262626] rounded-xl shadow-md overflow-hidden border border-[#404040]">
-          <div className="p-4 border-b border-[#404040]">
-            <h3 className="font-medium text-[#e6d2b5]">Mortgage Information</h3>
-          </div>
-          <MortgageInfo mortgageData={financialData.mortgages} />
         </div>
       </div>
       
