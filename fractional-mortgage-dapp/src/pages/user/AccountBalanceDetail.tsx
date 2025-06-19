@@ -1,6 +1,6 @@
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import AccountBalanceChart from '../components/dashboard/AccountBalanceChart';
+import AccountBalanceChart from '../../components/dashboard/AccountBalanceChart';
 
 const AccountBalanceDetail = () => {
   const navigate = useNavigate();

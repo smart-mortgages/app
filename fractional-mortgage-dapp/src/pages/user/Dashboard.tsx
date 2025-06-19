@@ -1,8 +1,8 @@
 // No React import needed
-import { BarChart3, Wallet, ArrowRight } from 'lucide-react';
+import { BarChart3, Wallet, ArrowRight, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import SimpleAccountChart from '../components/dashboard/SimpleAccountChart';
-import SimpleMortgageChart from '../components/dashboard/SimpleMortgageChart';
+import SimpleAccountChart from '../../components/dashboard/SimpleAccountChart';
+import SimpleMortgageChart from '../../components/dashboard/SimpleMortgageChart';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -55,6 +55,13 @@ const Dashboard = () => {
       <div className="bg-gradient-to-r from-[#262626] to-[#333333] p-6 rounded-b-3xl shadow-lg border-b border-[#d2b48c]">
         <div className="flex justify-end mb-6">
           <div className="flex space-x-3">
+            <button 
+              onClick={() => navigate('/admin')}
+              className="flex items-center space-x-2 bg-[#d2b48c] text-[#f5f5f5] px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#c19a6b] transition-colors shadow-md"
+            >
+              <ShieldCheck className="w-5 h-5" />
+              <span>Admin</span>
+            </button>
             <button className="flex items-center space-x-2 bg-[#d2b48c] text-[#f5f5f5] px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#c19a6b] transition-colors shadow-md">
               <BarChart3 className="w-5 h-5" />
               <span>Stats</span>
@@ -152,7 +159,7 @@ const Dashboard = () => {
               </div>
             ))}
           </div>
-          <button className="w-full p-3 text-center text-purple-600 font-medium">
+          <button className="w-full p-3 text-center text-[#e6d2b5] font-medium">
             Show all transactions
           </button>
         </div>
