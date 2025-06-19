@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
-import Dashboard from './pages/Dashboard'
-import AccountBalanceDetail from './pages/AccountBalanceDetail'
-import MortgageDetail from './pages/MortgageDetail'
+import Dashboard from './pages/user/Dashboard'
+import AccountBalanceDetail from './pages/user/AccountBalanceDetail'
+import MortgageDetail from './pages/user/MortgageDetail'
 import './App.css'
 
 function App() {

@@ -1,8 +1,8 @@
 // No React import needed
 import { BarChart3, Wallet, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import SimpleAccountChart from '../components/dashboard/SimpleAccountChart';
-import SimpleMortgageChart from '../components/dashboard/SimpleMortgageChart';
+import SimpleAccountChart from '../../components/dashboard/SimpleAccountChart';
+import SimpleMortgageChart from '../../components/dashboard/SimpleMortgageChart';
 
 const Dashboard = () => {
   const navigate = useNavigate();

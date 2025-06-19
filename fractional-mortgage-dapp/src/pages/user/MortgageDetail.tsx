@@ -1,6 +1,6 @@
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import MortgageInfo from '../components/dashboard/MortgageInfo';
+import MortgageInfo from '../../components/dashboard/MortgageInfo';
 
 interface MortgageDetailProps {
   mortgageData?: {
