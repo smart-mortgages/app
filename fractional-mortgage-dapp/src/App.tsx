@@ -15,7 +15,7 @@ function App() {
           <Route path="/account-balance" element={<AccountBalanceDetail />} />
           <Route path="/mortgage" element={<MortgageDetail />} />
           <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          <Route path="*" element={<Navigate to="/admin" replace />} />
         </Routes>
       </Router>
     </DataProvider>

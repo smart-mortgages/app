@@ -48,14 +48,25 @@ const AdminDashboard = () => {
       // Update campaigns with potential clients from mortgage data
       const updatedCampaigns = campaigns.map(campaign => {
         // Create potential clients from mortgage data
-        const potentialClients = flattenedData.map((item, index) => ({
-          id: `pc-${index}`,
-          name: `Client ${item.mortgage.data.loanAgreementNumber}`,
-          email: `client-${item.customer.personalIdNumber}@example.com`,
-          applied: false,
-          personalIdNumber: item.customer.personalIdNumber,
-          loanAgreementNumber: item.mortgage.data.loanAgreementNumber
-        }));
+        const potentialClients = flattenedData.map((item, index) => {
+          // Generate a realistic name based on personal ID number to simulate real customer data
+          const firstNames = ['John', 'Emma', 'Michael', 'Sophia', 'David', 'Olivia', 'James', 'Ava', 'Robert', 'Isabella'];
+          const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Miller', 'Davis', 'Garcia', 'Rodriguez', 'Wilson'];
+          
+          // Use personal ID number to deterministically select a name
+          const idNum = parseInt(item.customer.personalIdNumber.replace(/\D/g, '').slice(-4)) || 0;
+          const firstName = firstNames[idNum % firstNames.length];
+          const lastName = lastNames[Math.floor(idNum / firstNames.length) % lastNames.length];
+          
+          return {
+            id: `pc-${index}`,
+            name: `${firstName} ${lastName}`,
+            email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}@example.com`,
+            applied: false,
+            personalIdNumber: item.customer.personalIdNumber,
+            loanAgreementNumber: item.mortgage.data.loanAgreementNumber
+          };
+        });
         
         // Add potential clients that aren't already in the campaign
         const existingClientIds = new Set(campaign.clients.map(c => c.id));
