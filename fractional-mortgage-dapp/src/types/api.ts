@@ -41,6 +41,12 @@ export interface CustomerData {
   personalIdNumber: string;
   interestRate: string;
   mortgages: MortgageData[];
+  // Added fields to match backend CustomerData interface
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phoneNumber?: string;
+  dateOfBirth?: string;
 }
 
 // Combined data type that pairs mortgage with customer data

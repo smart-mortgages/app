@@ -49,19 +49,15 @@ const AdminDashboard = () => {
       const updatedCampaigns = campaigns.map(campaign => {
         // Create potential clients from mortgage data
         const potentialClients = flattenedData.map((item, index) => {
-          // Generate a realistic name based on personal ID number to simulate real customer data
-          const firstNames = ['John', 'Emma', 'Michael', 'Sophia', 'David', 'Olivia', 'James', 'Ava', 'Robert', 'Isabella'];
-          const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Miller', 'Davis', 'Garcia', 'Rodriguez', 'Wilson'];
-          
-          // Use personal ID number to deterministically select a name
-          const idNum = parseInt(item.customer.personalIdNumber.replace(/\D/g, '').slice(-4)) || 0;
-          const firstName = firstNames[idNum % firstNames.length];
-          const lastName = lastNames[Math.floor(idNum / firstNames.length) % lastNames.length];
+          // Use actual customer data if available, otherwise generate a fallback name
+          const firstName = item.customer.firstName || 'Client';
+          const lastName = item.customer.lastName || item.customer.personalIdNumber;
+          const email = item.customer.email || `client-${item.customer.personalIdNumber}@example.com`;
           
           return {
             id: `pc-${index}`,
             name: `${firstName} ${lastName}`,
-            email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}@example.com`,
+            email: email,
             applied: false,
             personalIdNumber: item.customer.personalIdNumber,
             loanAgreementNumber: item.mortgage.data.loanAgreementNumber
