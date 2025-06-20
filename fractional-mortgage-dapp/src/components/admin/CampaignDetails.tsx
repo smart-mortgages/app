@@ -204,7 +204,7 @@ const CampaignDetails: React.FC<CampaignDetailsProps> = ({
                     <td className="p-3">
                       <button 
                         onClick={() => handleAddClientToCampaign(client)}
-                        className="px-2 py-1 bg-[#d2b48c] text-[#1a1a1a] rounded hover:bg-[#c19a6b] transition-colors text-xs font-medium"
+                        className="px-2 py-1 bg-[#1a1a1a] text-[#d2b48c] rounded hover:bg-[#c19a6b] transition-colors text-xs font-medium"
                       >
                         Add to Campaign
                       </button>
