@@ -11,10 +11,12 @@ services:
       - ./fractional-mortgage-dapp:/app
       - /app/node_modules
     environment:
-      - VITE_API_BASE_URL="http://backend:3000"
+      - VITE_API_BASE_URL=https://fess-posnurkovany-backend.treasuryai.cloud
     restart: unless-stopped
     depends_on:
       - backend
+    networks:
+      - mortgage-network
 
   backend:
     build:
@@ -24,8 +26,19 @@ services:
       - "3000:3000"
     volumes:
       - ./backend:/usr/src/app
+      - ./.env:/usr/src/app/.env
       - /usr/src/app/node_modules
     environment:
       - NODE_ENV=development
+      - RPC=http://anvil-node-innovation-machine.treasuryai.cloud
+      - ACCOUNT=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+      - PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+      - MORTGAGE_MANAGER=0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512
     command: ["npm", "run", "start"]
     restart: unless-stopped
+    networks:
+      - mortgage-network
+
+networks:
+  mortgage-network:
+    driver: bridge
