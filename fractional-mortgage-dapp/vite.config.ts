@@ -12,6 +12,6 @@ export default defineConfig({
   },
   server: {
     // Allow the deployed host
-    allowedHosts: ['fess-posnurkovany-frontend.treasuryai.cloud']
+    allowedHosts: ['fess-posnurkovany-frontend.treasuryai.cloud', 'smart-mortgages.treasuryai.cloud', 'localhost']
   }
 })
