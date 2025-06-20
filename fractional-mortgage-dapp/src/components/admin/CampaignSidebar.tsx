@@ -65,7 +65,7 @@ const CampaignSidebar: React.FC<CampaignSidebarProps> = ({
         {/* Create New Campaign Button */}
         <button
           onClick={handleCreateNewCampaign}
-          className="w-full flex items-center justify-center py-3 mt-2 border-t border-[#404040] text-[#a0a0a0] hover:text-[#d2b48c] hover:bg-[#303030] transition-colors"
+          className="w-full flex items-center justify-center py-3 mt-2 border-t border-[#404040] text-[#d2b48c] bg-[#262626] hover:bg-[#303030] transition-colors"
         >
           <Plus className="w-4 h-4 mr-1" />
           <span className="text-sm">Create New Campaign</span>
