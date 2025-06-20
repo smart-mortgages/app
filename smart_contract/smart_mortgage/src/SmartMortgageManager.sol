@@ -40,6 +40,16 @@ contract SmartMortgageManager {
         }
     }
 
+    function saveSmartMortgageRules(
+        string memory loanAgreementNumber,
+        SmartMortgageRules memory mortgageRules
+    ) public {
+        SmartMortgage mortgage = mortgages[loanAgreementNumber];
+        require(address(mortgage) != address(0), "Smart Mortgage does not exist");
+
+        mortgage.setRules(mortgageRules);
+    }
+
     function getAllCustomers() public view returns (address[] memory) {
         address[] memory result = new address[](customerKeys.length);
         for (uint i = 0; i < customerKeys.length; i++) {

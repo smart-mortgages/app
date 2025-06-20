@@ -59,5 +59,16 @@ contract SmartMortgageManagerTest is Test {
 
         SmartMortgage mortgage = SmartMortgage(manager.getAllSmartMortgages()[0]);
         assertEq(mortgage.getInterestRate(), 380);
+
+        // set new mortgageRules
+        mortgageRules = SmartMortgageRules({
+            checkAccount: false,
+            checkBalance: true,
+            checkTxCount: false
+        });
+        manager.saveSmartMortgageRules(mortgage.getData().loanAgreementNumber, mortgageRules);
+
+        mortgage = SmartMortgage(manager.getAllSmartMortgages()[0]);
+        assertEq(mortgage.getInterestRate(), 420);
     }
 }

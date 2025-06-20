@@ -221,5 +221,40 @@
     ],
     "outputs": [],
     "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "saveSmartMortgageRules",
+    "inputs": [
+      {
+        "name": "loanAgreementNumber",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "mortgageRules",
+        "type": "tuple",
+        "internalType": "struct SmartMortgageRules",
+        "components": [
+          {
+            "name": "checkAccount",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "checkBalance",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "checkTxCount",
+            "type": "bool",
+            "internalType": "bool"
+          }
+        ]
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
   }
 ]
