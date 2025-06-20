@@ -1,9 +1,11 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
-
+/* Apply dark mode consistently across platforms */
 :root {
+  /* Force dark mode */
+  color-scheme: dark;
+
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -105,7 +107,8 @@ button:focus-visible {
   }
 }
 
-@theme inline {
+/* Theme variables */
+:root {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -177,11 +180,23 @@ button:focus-visible {
   --sidebar-ring: oklch(0.553 0.013 58.071);
 }
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+/* Base styles */
+* {
+  border-color: var(--border);
+  outline-color: rgba(var(--ring), 0.5);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/* Add a class to ensure dark mode is applied */
+html {
+  background-color: var(--background);
+}
+
+/* Force dark mode class on the html element */
+html:root {
+  color-scheme: dark;
 }
