@@ -1,6 +1,6 @@
-import React from 'react';
-import { CheckCircle, AlertCircle } from 'lucide-react';
-import type { Condition, Campaign } from '../../types/admin';
+import React, { useState } from 'react';
+import { CheckCircle, AlertCircle, UserPlus, Search } from 'lucide-react';
+import type { Condition, Campaign, Client } from '../../types/admin';
 
 interface CampaignDetailsProps {
   selectedCampaign: Campaign | null;
@@ -8,6 +8,8 @@ interface CampaignDetailsProps {
   getCampaignProgress: (campaign: Campaign) => number;
   handleEditCampaign: (campaign: Campaign) => void;
   getConditionById: (conditionId: string) => Condition | undefined;
+  // New prop for handling client addition
+  updateCampaign?: (updatedCampaign: Campaign) => void;
 }
 
 const CampaignDetails: React.FC<CampaignDetailsProps> = ({
@@ -15,8 +17,37 @@ const CampaignDetails: React.FC<CampaignDetailsProps> = ({
   getCampaignStatusColor,
   getCampaignProgress,
   handleEditCampaign,
-  getConditionById
+  getConditionById,
+  updateCampaign
 }) => {
+  const [showPotentialClients, setShowPotentialClients] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  
+  // Function to add a potential client to the campaign
+  const handleAddClientToCampaign = (client: Client) => {
+    if (!selectedCampaign || !updateCampaign) return;
+    
+    // Create a copy of the selected campaign
+    const updatedCampaign = { ...selectedCampaign };
+    
+    // Add the client to the campaign's clients list
+    const newClient = {
+      ...client,
+      applied: false, // Set initial status as not applied
+    };
+    
+    updatedCampaign.clients = [...updatedCampaign.clients, newClient];
+    
+    // Remove the client from potential clients
+    if (updatedCampaign.potentialClients) {
+      updatedCampaign.potentialClients = updatedCampaign.potentialClients.filter(
+        potentialClient => potentialClient.id !== client.id
+      );
+    }
+    
+    // Update the campaign
+    updateCampaign(updatedCampaign);
+  };
   if (!selectedCampaign) {
     return (
       <div className="p-6 text-center">
@@ -52,8 +83,12 @@ const CampaignDetails: React.FC<CampaignDetailsProps> = ({
           >
             Edit Campaign
           </button>
-          <button className="px-4 py-2 bg-[#d2b48c] text-[#f5f5f5] rounded-lg hover:bg-[#c19a6b] transition-colors text-sm font-medium">
-            Add Clients
+          <button 
+            onClick={() => setShowPotentialClients(!showPotentialClients)}
+            className="px-4 py-2 bg-[#d2b48c] text-[#f5f5f5] rounded-lg hover:bg-[#c19a6b] transition-colors text-sm font-medium flex items-center"
+          >
+            <UserPlus className="w-4 h-4 mr-1" />
+            {showPotentialClients ? 'Hide Potential Clients' : 'Add Clients'}
           </button>
         </div>
       </div>
@@ -123,9 +158,69 @@ const CampaignDetails: React.FC<CampaignDetailsProps> = ({
         </div>
       </div>
 
+      {/* Potential Clients Section */}
+      {showPotentialClients && selectedCampaign.potentialClients && selectedCampaign.potentialClients.length > 0 && (
+        <div className="mb-6">
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="text-lg font-medium text-[#e6d2b5]">Potential Clients</h3>
+            <span className="text-sm text-[#a0a0a0]">{selectedCampaign.potentialClients.length} available</span>
+          </div>
+          
+          <div className="bg-[#262626] rounded-lg border border-[#404040] overflow-hidden">
+            <div className="p-3 border-b border-[#404040] flex">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#a0a0a0] w-4 h-4" />
+                <input
+                  type="text"
+                  placeholder="Search clients..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full bg-[#333333] border border-[#404040] rounded-md py-2 pl-10 pr-4 text-[#f5f5f5] text-sm focus:outline-none focus:ring-1 focus:ring-[#d2b48c]"
+                />
+              </div>
+            </div>
+            
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-[#333333]">
+                  <th className="text-left text-[#a0a0a0] p-3">Loan Agreement #</th>
+                  <th className="text-left text-[#a0a0a0] p-3">Personal ID</th>
+                  <th className="text-left text-[#a0a0a0] p-3">Name</th>
+                  <th className="text-left text-[#a0a0a0] p-3">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {selectedCampaign.potentialClients
+                  .filter(client => 
+                    client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    (client.loanAgreementNumber && client.loanAgreementNumber.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                    (client.personalIdNumber && client.personalIdNumber.toLowerCase().includes(searchTerm.toLowerCase()))
+                  )
+                  .map(client => (
+                  <tr key={client.id} className="border-t border-[#404040]">
+                    <td className="p-3 text-[#f5f5f5]">{client.loanAgreementNumber || 'N/A'}</td>
+                    <td className="p-3 text-[#f5f5f5]">{client.personalIdNumber || 'N/A'}</td>
+                    <td className="p-3 text-[#f5f5f5]">{client.name}</td>
+                    <td className="p-3">
+                      <button 
+                        onClick={() => handleAddClientToCampaign(client)}
+                        className="px-2 py-1 bg-[#d2b48c] text-[#1a1a1a] rounded hover:bg-[#c19a6b] transition-colors text-xs font-medium"
+                      >
+                        Add to Campaign
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+      
+      {/* Current Clients Section */}
       <div>
         <div className="flex justify-between items-center mb-2">
-          <h3 className="text-lg font-medium text-[#e6d2b5]">Clients</h3>
+          <h3 className="text-lg font-medium text-[#e6d2b5]">Current Clients</h3>
           <span className="text-sm text-[#a0a0a0]">{appliedClients.length} applied of {selectedCampaign.clients.length} total</span>
         </div>
         <div className="bg-[#262626] rounded-lg border border-[#404040] overflow-hidden">

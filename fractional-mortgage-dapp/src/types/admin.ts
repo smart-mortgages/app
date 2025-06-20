@@ -29,6 +29,8 @@ export interface Client {
   name: string;
   email: string;
   applied: boolean;
+  personalIdNumber?: string;
+  loanAgreementNumber?: string;
 }
 
 export interface ConditionWithProperties {
@@ -44,6 +46,7 @@ export interface Campaign {
   startDate: string;
   endDate: string;
   clients: Client[];
+  potentialClients?: Client[]; // Potential clients from API data
   targetClients: number;
   status: 'active' | 'pending' | 'completed';
   mortgageType: string;

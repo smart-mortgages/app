@@ -9,5 +9,9 @@ export default defineConfig({
     alias: {
       '@': '/src'
     }
+  },
+  server: {
+    // Allow the deployed host
+    allowedHosts: ['fess-posnurkovany-frontend.treasuryai.cloud']
   }
 })

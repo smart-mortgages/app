@@ -1,10 +1,14 @@
 // src/pages/admin/Dashboard.tsx
 import { Home, Users, Settings, Tag } from 'lucide-react';
 // import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 // Import types
 import type { Campaign, Condition, NavItem, ConditionWithProperties } from '../../types/admin';
+import type { MortgageData, CustomerData } from '../../types/api';
+
+// Import data context
+import { useDataContext } from '../../context/DataContext';
 
 // Import components
 import SidebarNavigation from '../../components/admin/SidebarNavigation';
@@ -18,6 +22,9 @@ import { mockConditions } from '../../data/mockConditions';
 import { mockCampaigns } from '../../data/mockCampaigns';
 
 const AdminDashboard = () => {
+  // Get data from context
+  const { customers, loading, error, refreshData } = useDataContext();
+  
   // State management
   const [activeSection, setActiveSection] = useState('campaigns');
   const [campaigns, setCampaigns] = useState(mockCampaigns);
@@ -25,7 +32,50 @@ const AdminDashboard = () => {
   const [editingCampaign, setEditingCampaign] = useState<Campaign | null>(null);
   const [campaignConditions, setCampaignConditions] = useState<string[]>([]);
   const [draggedCondition, setDraggedCondition] = useState<Condition | null>(null);
+  const [mortgageData, setMortgageData] = useState<{customer: CustomerData, mortgage: MortgageData}[]>([]);
   
+  // Effect to update mortgage data when API data changes
+  useEffect(() => {
+    if (customers.length > 0) {
+      // Create a flattened array of customers with their mortgages
+      const flattenedData = customers.flatMap(customer => 
+        customer.mortgages.map(mortgage => ({ customer, mortgage }))
+      );
+      
+      setMortgageData(flattenedData);
+      console.log('Mortgage data loaded:', flattenedData);
+      
+      // Update campaigns with potential clients from mortgage data
+      const updatedCampaigns = campaigns.map(campaign => {
+        // Create potential clients from mortgage data
+        const potentialClients = flattenedData.map((item, index) => ({
+          id: `pc-${index}`,
+          name: `Client ${item.mortgage.data.loanAgreementNumber}`,
+          email: `client-${item.customer.personalIdNumber}@example.com`,
+          applied: false,
+          personalIdNumber: item.customer.personalIdNumber,
+          loanAgreementNumber: item.mortgage.data.loanAgreementNumber
+        }));
+        
+        // Add potential clients that aren't already in the campaign
+        const existingClientIds = new Set(campaign.clients.map(c => c.id));
+        const newClients = potentialClients.filter(pc => !existingClientIds.has(pc.id));
+        
+        return {
+          ...campaign,
+          potentialClients: newClients
+        };
+      });
+      
+      setCampaigns(updatedCampaigns);
+    }
+  }, [customers]);
+
+  // Effect to refresh data when component mounts
+  useEffect(() => {
+    refreshData();
+  }, []);
+
   // Navigation items
   const navItems: NavItem[] = [
     { id: 'campaigns', label: 'Campaigns', icon: <Tag className="w-5 h-5" /> },
@@ -96,6 +146,18 @@ const AdminDashboard = () => {
   const handleCancelEdit = () => {
     setEditingCampaign(null);
     setCampaignConditions([]);
+  };
+  
+  // Update campaign (used when adding clients or making other changes)
+  const handleUpdateCampaign = (updatedCampaign: Campaign) => {
+    // Update the campaign in the campaigns array
+    const updatedCampaigns = campaigns.map(camp => 
+      camp.id === updatedCampaign.id ? updatedCampaign : camp
+    );
+    
+    // Update state
+    setCampaigns(updatedCampaigns);
+    setSelectedCampaign(updatedCampaign);
   };
   
   // Create new campaign
@@ -210,6 +272,7 @@ const AdminDashboard = () => {
                   getCampaignProgress={getCampaignProgress}
                   handleEditCampaign={handleEditCampaign}
                   getConditionById={getConditionById}
+                  updateCampaign={handleUpdateCampaign}
                 />
               )}
             </div>
@@ -228,7 +291,38 @@ const AdminDashboard = () => {
           <div className="bg-[#262626] rounded-xl shadow-md p-8 border border-[#404040]">
             <h3 className="text-xl font-medium text-[#d2b48c] mb-4">Mortgage Management</h3>
             <p className="text-[#f5f5f5] mb-6">Review and manage mortgage contracts.</p>
-            <p className="text-[#a0a0a0]">Mortgage management features will be implemented here.</p>
+            
+            {mortgageData.length > 0 ? (
+              <div className="mt-4">
+                <h4 className="text-[#e6d2b5] text-lg mb-3">Loaded Mortgages</h4>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm text-left text-[#f5f5f5]">
+                    <thead className="text-xs uppercase bg-[#333333] text-[#d2b48c]">
+                      <tr>
+                        <th className="px-4 py-3">Loan Agreement #</th>
+                        <th className="px-4 py-3">Personal ID</th>
+                        <th className="px-4 py-3">Balance (EUR)</th>
+                        <th className="px-4 py-3">Monthly Payment</th>
+                        <th className="px-4 py-3">Payment Discipline</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {mortgageData.map((item, index) => (
+                        <tr key={index} className="border-b border-[#333333]">
+                          <td className="p-3 text-[#f5f5f5]">{item.mortgage.data.loanAgreementNumber}</td>
+                          <td className="p-3 text-[#f5f5f5]">{item.customer.personalIdNumber}</td>
+                          <td className="p-3 text-[#f5f5f5]">{item.mortgage.data.mortgageBalanceEUR}</td>
+                          <td className="p-3 text-[#f5f5f5]">{item.mortgage.data.monthlyMortgagePaymentEUR}</td>
+                          <td className="p-3 text-[#f5f5f5]">{item.mortgage.data.paymentDiscipline}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ) : (
+              <p className="text-[#a0a0a0]">No mortgage data available.</p>
+            )}
           </div>
         );
       case 'settings':
@@ -264,7 +358,24 @@ const AdminDashboard = () => {
         />
         
         <div className="flex-1 overflow-y-auto p-6">
-          {renderContent()}
+          {loading ? (
+            <div className="flex items-center justify-center h-full">
+              <div className="text-[#d2b48c] text-lg">Loading data...</div>
+            </div>
+          ) : error ? (
+            <div className="bg-[#3a1c1c] text-[#f08080] p-4 rounded-md">
+              <h3 className="font-medium">Error loading data</h3>
+              <p>{error}</p>
+              <button 
+                onClick={refreshData}
+                className="mt-2 px-4 py-2 bg-[#d2b48c] text-[#1a1a1a] rounded hover:bg-[#c0a070] transition-colors"
+              >
+                Retry
+              </button>
+            </div>
+          ) : (
+            renderContent()
+          )}
         </div>
       </div>
     </div>

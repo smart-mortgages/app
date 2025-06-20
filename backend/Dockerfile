@@ -3,14 +3,13 @@ FROM node:22-alpine
 # Create app directory
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json
-COPY package*.json ./
-
-# Install dependencies
-RUN npm ci
-
-# Copy source code
+# Copy everything at once to ensure all files are available
 COPY . .
+
+# Install all dependencies and ensure cors is installed
+RUN npm install && \
+    npm install cors @types/cors --save && \
+    npm list cors
 
 # Build the TypeScript code
 RUN npm run build
